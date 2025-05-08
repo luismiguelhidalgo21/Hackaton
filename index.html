@@ -6,23 +6,18 @@
     <title>Wallet Connect | MetaMask</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #f6851b;
-            --primary-hover: #e2761b;
-            --secondary: #2b2b2b;
-            --light-bg: #f8f9fa;
-            --card-bg: #ffffff;
+            --primary-light: rgba(246, 134, 27, 0.1);
             --text: #333333;
             --text-light: #6c757d;
-            --success: #28a745;
+            --border: #e0e0e0;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
             --error: #dc3545;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-            --border-radius: 12px;
+            --transition: all 0.25s ease;
         }
 
         * {
@@ -33,7 +28,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--light-bg);
+            background-color: var(--bg);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
@@ -41,106 +36,40 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
-            background-image: radial-gradient(circle at 10% 20%, rgba(246, 134, 27, 0.05) 0%, rgba(255, 255, 255, 1) 90%);
+            padding: 1rem;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
+            max-width: 420px;
             background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-            transform: translateY(0);
             transition: var(--transition);
-            position: relative;
-        }
-
-        .container:hover {
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
         }
 
         .header {
-            background-color: var(--primary);
-            color: white;
             padding: 1.5rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: -50px;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -30px;
-            right: -30px;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
+            border-bottom: 1px solid var(--border);
         }
 
         h1 {
-            font-weight: 600;
-            font-size: 1.75rem;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
+            font-weight: 500;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
         }
 
         .subtitle {
-            font-weight: 300;
-            opacity: 0.9;
-            font-size: 0.9rem;
-            position: relative;
-            z-index: 1;
+            font-weight: 400;
+            color: var(--text-light);
+            font-size: 0.875rem;
         }
 
         .content {
-            padding: 2rem;
-        }
-
-        .instructions {
-            background-color: rgba(246, 134, 27, 0.05);
-            border-left: 4px solid var(--primary);
-            padding: 1.25rem;
-            margin-bottom: 2rem;
-            border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            transition: var(--transition);
-        }
-
-        .instructions:hover {
-            background-color: rgba(246, 134, 27, 0.08);
-        }
-
-        .instructions h3 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .instructions ol {
-            padding-left: 1.25rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .instructions li {
-            margin-bottom: 0.5rem;
+            padding: 1.5rem;
         }
 
         .btn-group {
@@ -154,8 +83,8 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 0.95rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9375rem;
             font-weight: 500;
             border-radius: 8px;
             cursor: pointer;
@@ -168,74 +97,91 @@
         }
 
         button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
+            background-color: #e2761b;
         }
 
-        button:active {
-            transform: translateY(0);
+        button.secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        button.secondary:hover {
+            background-color: var(--primary-light);
         }
 
         button:disabled {
-            background-color: #cccccc;
+            background-color: #e0e0e0;
+            color: #a0a0a0;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        }
+
+        #instructions {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            margin-bottom: 1rem;
+        }
+
+        #instructions.expanded {
+            max-height: 300px;
+        }
+
+        .instructions-content {
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: var(--text);
+        }
+
+        .instructions-content ol {
+            padding-left: 1.25rem;
+        }
+
+        .instructions-content li {
+            margin-bottom: 0.5rem;
         }
 
         #userInfo {
-            background-color: var(--light-bg);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-top: 1.5rem;
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
             opacity: 0;
-            height: 0;
-            overflow: hidden;
-            transition: opacity 0.4s ease, height 0.4s ease;
+            transition: opacity 0.3s ease;
         }
 
         #userInfo.visible {
+            display: block;
             opacity: 1;
-            height: auto;
         }
 
         .info-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .info-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+            font-size: 0.875rem;
         }
 
         .info-label {
-            font-weight: 500;
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .info-value {
-            font-weight: 600;
             text-align: right;
             word-break: break-all;
-        }
-
-        #walletAddress {
-            font-family: monospace;
+            max-width: 60%;
         }
 
         #error {
             color: var(--error);
-            font-size: 0.9rem;
+            font-size: 0.8125rem;
             margin-top: 1rem;
             text-align: center;
-            min-height: 1.5rem;
+            min-height: 1.25rem;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -245,66 +191,49 @@
         }
 
         .metamask-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
         }
 
-        .success-message {
-            color: var(--success);
-            text-align: center;
-            margin-top: 1rem;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
+        .chevron {
+            transition: transform 0.3s ease;
         }
 
-        .success-message.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .chevron.down {
+            transform: rotate(90deg);
         }
 
-        @media (max-width: 576px) {
-            body {
-                padding: 1rem;
-            }
-            
+        @media (max-width: 480px) {
             .container {
                 max-width: 100%;
             }
-            
-            .content {
-                padding: 1.5rem;
-            }
-        }
-
-        /* Animación de carga */
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-
-        .loading {
-            animation: pulse 1.5s infinite ease-in-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Wallet Connect</h1>
+            <h1>Conectar Wallet</h1>
             <p class="subtitle">Autenticación segura con MetaMask</p>
         </div>
         
         <div class="content">
-            <div class="instructions">
-                <h3>Instrucciones de conexión</h3>
-                <ol>
-                    <li>Asegúrate de tener MetaMask instalado</li>
-                    <li>Haz clic en "Conectar Wallet"</li>
-                    <li>Autoriza la conexión en la ventana de MetaMask</li>
-                </ol>
+            <button id="toggleInstructions" class="secondary">
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                Instrucciones
+            </button>
+            
+            <div id="instructions">
+                <div class="instructions-content">
+                    <ol>
+                        <li>Asegúrate de tener la extensión MetaMask instalada en tu navegador</li>
+                        <li>Haz clic en "Conectar Wallet" más abajo</li>
+                        <li>Autoriza la conexión en la ventana emergente de MetaMask</li>
+                        <li>Una vez conectado, podrás firmar mensajes para verificar tu identidad</li>
+                    </ol>
+                </div>
             </div>
             
             <div class="btn-group">
@@ -318,38 +247,14 @@
                         <path d="M141.895 79.6001L120.139 62.1684L119.462 97.6668L152.267 96.3634L141.895 79.6001Z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M70.7184 155.685L88.3503 146.193L73.7153 131.302L70.7184 155.685Z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M123.65 146.193L141.282 155.685L138.285 131.302L123.65 146.193Z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M141.282 155.685L123.65 146.193L125.854 160.149L125.729 164.003L141.282 155.685Z" fill="#D7C1B3" stroke="#D7C1B3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M70.7184 155.685L86.2714 164.003L86.1614 160.149L88.3503 146.193L70.7184 155.685Z" fill="#D7C1B3" stroke="#D7C1B3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M86.3164 120.418L72.8854 115.214L82.4144 110.526L86.3164 120.418Z" fill="#233447" stroke="#233447" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M125.684 120.418L129.586 110.526L139.13 115.214L125.684 120.418Z" fill="#233447" stroke="#233447" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M70.7184 155.685L73.8303 128.904L58.8903 128.992L70.7184 155.685Z" fill="#CD6116" stroke="#CD6116" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M138.17 128.904L141.282 155.685L153.11 128.992L138.17 128.904Z" fill="#CD6116" stroke="#CD6116" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M119.462 97.6668L120.139 62.1684L120.522 64.6826L105.887 77.9001L92.5384 97.6668L119.462 97.6668Z" fill="#CD6116" stroke="#CD6116" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M91.2534 64.6826L91.7464 62.3828L92.5384 97.6668L79.1134 77.9001L91.2534 64.6826Z" fill="#CD6116" stroke="#CD6116" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M92.5384 97.6668L79.1134 77.9001L70.1055 79.6001L59.7334 96.3634L92.5384 97.6668Z" fill="#E4751F" stroke="#E4751F" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M119.462 97.6668L152.267 96.3634L141.895 79.6001L132.887 77.9001L119.462 97.6668Z" fill="#E4751F" stroke="#E4751F" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M92.5384 97.6668L105.887 77.9001L100.316 70.5L70.1055 79.6001L92.5384 97.6668Z" fill="#F6851B" stroke="#F6851B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M132.887 77.9001L127.316 70.5L141.895 79.6001L132.887 77.9001Z" fill="#F6851B" stroke="#F6851B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M119.462 97.6668L132.887 77.9001L127.316 70.5L120.522 64.6826L105.887 77.9001L119.462 97.6668Z" fill="#F6851B" stroke="#F6851B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M91.2534 64.6826L84.5184 28.0934L35.6768 5.19043L70.1055 79.6001L91.2534 64.6826Z" fill="#F6851B" stroke="#F6851B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M35.6768 5.19043L0.324219 94.6668L28.8403 128.992L38.2314 164.284L70.7184 155.685L58.8903 128.904L73.8303 128.904L35.6768 5.19043Z" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M120.522 64.6826L127.482 28.0934L176.324 5.19043L141.895 79.6001L120.522 64.6826Z" fill="#F6851B" stroke="#F6851B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M176.324 5.19043L183.16 128.992L211.676 94.6668L176.324 5.19043Z" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M211.676 94.6668L183.16 128.992L153.11 128.904L138.17 128.904L141.282 155.685L173.769 164.284L211.676 94.6668Z" fill="#F6851B" stroke="#F6851B" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     Conectar Wallet
                 </button>
                 <button id="signButton" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 19V5M5 12l7-7 7 7"/>
                     </svg>
                     Firmar Mensaje
-                </button>
-                <button id="disconnectButton" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-                    </svg>
-                    Desconectar
                 </button>
             </div>
             
@@ -369,10 +274,6 @@
             </div>
             
             <div id="error"></div>
-            
-            <div class="success-message" id="successMessage">
-                ¡Conexión exitosa con MetaMask!
-            </div>
         </div>
     </div>
 
@@ -380,15 +281,33 @@
         // Elementos del DOM
         const connectButton = document.getElementById('connectButton');
         const signButton = document.getElementById('signButton');
-        const disconnectButton = document.getElementById('disconnectButton');
+        const toggleInstructions = document.getElementById('toggleInstructions');
+        const instructions = document.getElementById('instructions');
+        const chevron = document.querySelector('.chevron');
         const walletAddress = document.getElementById('walletAddress');
         const walletBalance = document.getElementById('walletBalance');
         const walletNetwork = document.getElementById('walletNetwork');
         const userInfo = document.getElementById('userInfo');
         const errorDiv = document.getElementById('error');
-        const successMessage = document.getElementById('successMessage');
         
         let accounts = [];
+        let instructionsExpanded = false;
+        
+        // Toggle de instrucciones
+        toggleInstructions.addEventListener('click', () => {
+            instructionsExpanded = !instructionsExpanded;
+            instructions.classList.toggle('expanded');
+            chevron.classList.toggle('down');
+            toggleInstructions.innerHTML = instructionsExpanded ? 
+                `<svg class="chevron down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                Ocultar instrucciones` :
+                `<svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                Mostrar instrucciones`;
+        });
         
         // Verificar si MetaMask está instalado
         if (typeof window.ethereum === 'undefined') {
@@ -415,7 +334,6 @@
         connectButton.addEventListener('click', async () => {
             try {
                 errorDiv.textContent = '';
-                connectButton.classList.add('loading');
                 
                 // Solicitar acceso a las cuentas
                 accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -423,35 +341,29 @@
                 if (accounts.length > 0) {
                     connectButton.disabled = true;
                     signButton.disabled = false;
-                    disconnectButton.disabled = false;
                     userInfo.classList.add('visible');
                     
                     updateUserInfo();
-                    showSuccess();
                 }
             } catch (error) {
                 showError('Error al conectar: ' + (error.message || error));
-            } finally {
-                connectButton.classList.remove('loading');
             }
         });
         
         // Firmar mensaje
         signButton.addEventListener('click', async () => {
             try {
-                const message = "Por favor, firma este mensaje para autenticarte. Esto no generará ningún costo.";
+                const message = "Por favor, firma este mensaje para autenticarte.";
                 const from = accounts[0];
-                
-                signButton.classList.add('loading');
                 
                 const signature = await window.ethereum.request({
                     method: 'personal_sign',
                     params: [message, from]
                 });
                 
-                // Mostrar feedback visual de éxito
+                // Feedback visual
                 signButton.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
@@ -460,7 +372,7 @@
                 
                 setTimeout(() => {
                     signButton.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 19V5M5 12l7-7 7 7"/>
                         </svg>
                         Firmar Mensaje
@@ -469,26 +381,18 @@
                 
             } catch (error) {
                 showError('Error al firmar: ' + (error.message || error));
-            } finally {
-                signButton.classList.remove('loading');
             }
-        });
-        
-        // Desconectar
-        disconnectButton.addEventListener('click', () => {
-            disconnect();
         });
         
         // Actualizar información del usuario
         async function updateUserInfo() {
             try {
                 const from = accounts[0];
-                walletAddress.textContent = from;
                 
-                // Formatear dirección para mejor legibilidad
+                // Formatear dirección
                 const formattedAddress = `${from.substring(0, 6)}...${from.substring(from.length - 4)}`;
                 walletAddress.textContent = formattedAddress;
-                walletAddress.setAttribute('title', from); // Tooltip con dirección completa
+                walletAddress.setAttribute('title', from);
                 
                 // Obtener balance
                 const balance = await window.ethereum.request({
@@ -524,10 +428,8 @@
             accounts = [];
             connectButton.disabled = false;
             signButton.disabled = true;
-            disconnectButton.disabled = true;
             userInfo.classList.remove('visible');
             errorDiv.textContent = '';
-            successMessage.classList.remove('visible');
         }
         
         // Mostrar error
@@ -535,12 +437,6 @@
             errorDiv.textContent = message;
             errorDiv.classList.add('visible');
             setTimeout(() => errorDiv.classList.remove('visible'), 5000);
-        }
-        
-        // Mostrar mensaje de éxito
-        function showSuccess() {
-            successMessage.classList.add('visible');
-            setTimeout(() => successMessage.classList.remove('visible'), 3000);
         }
     </script>
 </body>
