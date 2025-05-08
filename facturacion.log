@@ -1,0 +1,422 @@
+2025-05-08 15:39:39,801 - WARNING - Datos de idioma español no encontrados
+2025-05-08 15:40:07,074 - WARNING - Datos de idioma español no encontrados
+2025-05-08 15:40:18,750 - INFO - Enviando solicitud a la API...
+2025-05-08 15:40:19,972 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:40:19,972 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:40:20,837 - INFO - Texto extraído por OCR:
+recibo
+DE N° DE RECIBO €S-001
+Rojo Polo Paella Inc. FECHA 2910112019
+Carretera Muelle 38. N° DE PEDIDO 1730/2019
+37531 Avila, Avila
+FECHA VENCINIENTO 2910/2019
+A ENVIAR A
+Leda Vilareal Leda Villareal
+Virgen Blanca 63 Coreas Bajas 68
+08769 Burges, Burgos 47300 Cadi, Cadiz
+CANT. DESCRIPCION PRECIO IMPORTE
+UNITARIO
+Subtotal 166.00
+VA 21.0% 34.65
+CONDICIONES Y FORMA DE PAGO
+1 pago se realizard en un plazo de 16 dias
+Banco Santander
+IBAN: E512 9456 7891
+SWIFT/B{C: ABCDESMIXXX
+
+2025-05-08 15:40:20,849 - ERROR - Error registrando factura: El archivo 'modelo-de-recibo-es-mono-negro-750px.png' ya existe en el directorio de facturas.
+2025-05-08 15:40:28,792 - INFO - Enviando solicitud a la API...
+2025-05-08 15:40:29,441 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:40:29,441 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:40:29,812 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 15:40:29,823 - ERROR - Error registrando factura: El archivo 'ejemplo-factura.jpg' ya existe en el directorio de facturas.
+2025-05-08 15:40:42,146 - INFO - Enviando solicitud a la API...
+2025-05-08 15:40:43,308 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:40:43,309 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:40:43,661 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 15:41:00,349 - INFO - Enviando solicitud a la API...
+2025-05-08 15:41:00,763 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:41:00,764 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:41:01,089 - INFO - Texto extraído por OCR:
+recibo
+DE N° DE RECIBO €S-001
+Rojo Polo Paella Inc. FECHA 2910112019
+Carretera Muelle 38. N° DE PEDIDO 1730/2019
+37531 Avila, Avila
+FECHA VENCINIENTO 2910/2019
+A ENVIAR A
+Leda Vilareal Leda Villareal
+Virgen Blanca 63 Coreas Bajas 68
+08769 Burges, Burgos 47300 Cadi, Cadiz
+CANT. DESCRIPCION PRECIO IMPORTE
+UNITARIO
+Subtotal 166.00
+VA 21.0% 34.65
+CONDICIONES Y FORMA DE PAGO
+1 pago se realizard en un plazo de 16 dias
+Banco Santander
+IBAN: E512 9456 7891
+SWIFT/B{C: ABCDESMIXXX
+
+2025-05-08 15:41:15,468 - INFO - Enviando solicitud a la API...
+2025-05-08 15:41:15,804 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:41:15,804 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:41:16,197 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 15:42:35,740 - WARNING - Datos de idioma español no encontrados
+2025-05-08 15:55:33,038 - WARNING - Datos de idioma español no encontrados
+2025-05-08 15:55:59,755 - INFO - Enviando solicitud a la API...
+2025-05-08 15:56:00,308 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:56:00,308 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 15:56:01,285 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 15:56:35,074 - INFO - Cámara iniciada correctamente
+2025-05-08 15:57:19,986 - INFO - Cámara detenida
+2025-05-08 15:59:22,008 - INFO - Cámara detenida
+2025-05-08 16:00:09,784 - WARNING - Datos de idioma español no encontrados
+2025-05-08 16:00:28,311 - INFO - Enviando solicitud a la API...
+2025-05-08 16:00:30,108 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:00:30,108 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:00:31,173 - INFO - Texto extraído por OCR:
+CLIENTE ANTES DE INSTALAR TOTAL APAGAR:
+PANELES SOLARES SOLARPRO
+$4,955.00
+(CUATRO MIL NOVECIENTOS CINCUENTA
+PUERTA DE HIERRO C.P. 31207 Y CINCO PESOS 00/100 M.N.)
+NO. DE SERVICIO: 581006843290
+RMU: 31207 13-06-00 XAXX-010101 001 CFE PERIODO FACTURADO: 10 SEP 19 - 11 NOV 19
+TARIFA: DAC NO. MEDIDOR: 6F13P0 © MULTIPLICADOR:1_—_ LIMITEDEPAGO:29NOV 19 SGRTEAPARTIR:
+Energia (kWh) 18246 17331 915
+Cargo fijo (2) 02466 00677 108.520 217.04
+Basico 915 4.262 3,899.73
+Suma 915 4,116.77
+Este grafico refleja tu nivel de consumo. A menor uso, mayor apoyo.
+D>
+° °
+Ahorra hasta 99% en tu Recibo
+Libérate de tus altos Consumos de Energia
+Suministro 191.62 0.00 0.00 191.62 Energia 4,116.77
+Distribucion 0.00 0.00 1,055.18 1,055.18 IVA 16% 658.68
+Transmisi6n 0.00 0.00 162.16 162.16 Fac. del Periodo 4,775.45
+CENACE 0.00 0.00 7.14 7.14 DAP 179.12
+Energia 0.00 0.00 578.28 578.28 Adeudo Anterior 2,666.49
+Capacidad 0.00 0.00 384.30 384.30 Su Pago 2,666.00
+SCnMEM(1) 0.00 0.00 4.94 4.94 Total $4,055.06
+Costo por alto consumo 1,743.15
+OR
+ve Le]
+opp Lee
+“Eee $4,955.00
+the | (CUATRO MIL NOVECIENTOS CINCUENTA
+| rat Y CINCO PESOS 00/100 M.N.)
+Pn |
+au hs
+
+2025-05-08 16:00:45,868 - INFO - Cámara detenida
+2025-05-08 16:01:01,150 - WARNING - Datos de idioma español no encontrados
+2025-05-08 16:01:14,296 - INFO - Enviando solicitud a la API...
+2025-05-08 16:01:15,862 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:01:15,862 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:01:17,034 - INFO - Texto extraído por OCR:
+CLIENTE ANTES DE INSTALAR TOTAL APAGAR:
+PANELES SOLARES SOLARPRO
+$4,955.00
+(CUATRO MIL NOVECIENTOS CINCUENTA
+PUERTA DE HIERRO C.P. 31207 Y CINCO PESOS 00/100 M.N.)
+NO. DE SERVICIO: 581006843290
+RMU: 31207 13-06-00 XAXX-010101 001 CFE PERIODO FACTURADO: 10 SEP 19 - 11 NOV 19
+TARIFA: DAC NO. MEDIDOR: 6F13P0 © MULTIPLICADOR:1_—_ LIMITEDEPAGO:29NOV 19 SGRTEAPARTIR:
+Energia (kWh) 18246 17331 915
+Cargo fijo (2) 02466 00677 108.520 217.04
+Basico 915 4.262 3,899.73
+Suma 915 4,116.77
+Este grafico refleja tu nivel de consumo. A menor uso, mayor apoyo.
+D>
+° °
+Ahorra hasta 99% en tu Recibo
+Libérate de tus altos Consumos de Energia
+Suministro 191.62 0.00 0.00 191.62 Energia 4,116.77
+Distribucion 0.00 0.00 1,055.18 1,055.18 IVA 16% 658.68
+Transmisi6n 0.00 0.00 162.16 162.16 Fac. del Periodo 4,775.45
+CENACE 0.00 0.00 7.14 7.14 DAP 179.12
+Energia 0.00 0.00 578.28 578.28 Adeudo Anterior 2,666.49
+Capacidad 0.00 0.00 384.30 384.30 Su Pago 2,666.00
+SCnMEM(1) 0.00 0.00 4.94 4.94 Total $4,055.06
+Costo por alto consumo 1,743.15
+OR
+ve Le]
+opp Lee
+“Eee $4,955.00
+the | (CUATRO MIL NOVECIENTOS CINCUENTA
+| rat Y CINCO PESOS 00/100 M.N.)
+Pn |
+au hs
+
+2025-05-08 16:01:17,038 - ERROR - Error registrando factura: El archivo 'luz.png' ya existe en el directorio de facturas.
+2025-05-08 16:01:33,332 - INFO - Enviando solicitud a la API...
+2025-05-08 16:01:35,177 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:01:35,177 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:01:36,178 - INFO - Texto extraído por OCR:
+CLIENTE ANTES DE INSTALAR TOTAL APAGAR:
+PANELES SOLARES SOLARPRO
+$4,955.00
+(CUATRO MIL NOVECIENTOS CINCUENTA
+PUERTA DE HIERRO C.P. 31207 Y CINCO PESOS 00/100 M.N.)
+NO. DE SERVICIO: 581006843290
+RMU: 31207 13-06-00 XAXX-010101 001 CFE PERIODO FACTURADO: 10 SEP 19 - 11 NOV 19
+TARIFA: DAC NO. MEDIDOR: 6F13P0 © MULTIPLICADOR:1_—_ LIMITEDEPAGO:29NOV 19 SGRTEAPARTIR:
+Energia (kWh) 18246 17331 915
+Cargo fijo (2) 02466 00677 108.520 217.04
+Basico 915 4.262 3,899.73
+Suma 915 4,116.77
+Este grafico refleja tu nivel de consumo. A menor uso, mayor apoyo.
+D>
+° °
+Ahorra hasta 99% en tu Recibo
+Libérate de tus altos Consumos de Energia
+Suministro 191.62 0.00 0.00 191.62 Energia 4,116.77
+Distribucion 0.00 0.00 1,055.18 1,055.18 IVA 16% 658.68
+Transmisi6n 0.00 0.00 162.16 162.16 Fac. del Periodo 4,775.45
+CENACE 0.00 0.00 7.14 7.14 DAP 179.12
+Energia 0.00 0.00 578.28 578.28 Adeudo Anterior 2,666.49
+Capacidad 0.00 0.00 384.30 384.30 Su Pago 2,666.00
+SCnMEM(1) 0.00 0.00 4.94 4.94 Total $4,055.06
+Costo por alto consumo 1,743.15
+OR
+ve Le]
+opp Lee
+“Eee $4,955.00
+the | (CUATRO MIL NOVECIENTOS CINCUENTA
+| rat Y CINCO PESOS 00/100 M.N.)
+Pn |
+au hs
+
+2025-05-08 16:01:45,832 - INFO - Cámara detenida
+2025-05-08 16:27:06,243 - WARNING - Datos de idioma español no encontrados
+2025-05-08 16:27:20,134 - INFO - Cámara iniciada con configuración mejorada
+2025-05-08 16:27:32,872 - INFO - Cámara detenida
+2025-05-08 16:28:00,428 - WARNING - Datos de idioma español no encontrados
+2025-05-08 16:28:21,483 - INFO - Enviando solicitud a la API...
+2025-05-08 16:28:24,758 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:28:24,759 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:28:25,628 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 16:28:25,631 - ERROR - Error registrando factura: Blockchain.add_factura() takes 3 positional arguments but 4 were given
+2025-05-08 16:28:29,986 - INFO - Cámara detenida
+2025-05-08 16:30:30,239 - WARNING - Datos de idioma español no encontrados
+2025-05-08 16:30:45,655 - INFO - Enviando solicitud a la API...
+2025-05-08 16:30:46,433 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:30:46,433 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:30:47,403 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 16:30:47,404 - ERROR - Error registrando factura: El archivo 'ejemplo-factura.jpg' ya existe en el directorio de facturas.
+2025-05-08 16:30:51,516 - INFO - Enviando solicitud a la API...
+2025-05-08 16:30:52,842 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:30:52,842 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:30:53,561 - INFO - Texto extraído por OCR:
+recibo
+DE N° DE RECIBO €S-001
+Rojo Polo Paella Inc. FECHA 2910112019
+Carretera Muelle 38. N° DE PEDIDO 1730/2019
+37531 Avila, Avila
+FECHA VENCINIENTO 2910/2019
+A ENVIAR A
+Leda Vilareal Leda Villareal
+Virgen Blanca 63 Coreas Bajas 68
+08769 Burges, Burgos 47300 Cadi, Cadiz
+CANT. DESCRIPCION PRECIO IMPORTE
+UNITARIO
+Subtotal 166.00
+VA 21.0% 34.65
+CONDICIONES Y FORMA DE PAGO
+1 pago se realizard en un plazo de 16 dias
+Banco Santander
+IBAN: E512 9456 7891
+SWIFT/B{C: ABCDESMIXXX
+
+2025-05-08 16:35:59,748 - WARNING - Datos de idioma español no encontrados
+2025-05-08 16:36:06,759 - INFO - Enviando solicitud a la API...
+2025-05-08 16:36:07,753 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:36:07,753 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:36:08,547 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
+2025-05-08 16:36:08,548 - ERROR - Error registrando factura: El archivo 'ejemplo-factura.jpg' ya existe en el directorio de facturas.
+2025-05-08 16:36:26,738 - INFO - Enviando solicitud a la API...
+2025-05-08 16:36:27,740 - ERROR - Error inesperado: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:36:27,741 - WARNING - Fallo en API: Error en API (Código: 422)
+Respuesta no es JSON válido
+2025-05-08 16:36:28,542 - INFO - Texto extraído por OCR:
+Prey Pe Poy
+6028, Igabel Gonzélez Lépez Guillet, S.A.
+sew de Contac, 28 Autovla hed, Km &
+tat ae ora 34043 Las Alamos
+Faw, ssbzseon8! 85 587 9095
+o7fiz2014 mig! rgscyenenom infoaquitet.com
+e004 Deseeipeisn Gantited Precio una Imports
+‘asco Busta negra 200 28s aoe
+Yen Mail E40 6 1.00 4350 aesne
+aonteeole Far aetartore 90 950 masoe
+icon aterng 700m blanca 290 os saan
+Ponte bén nog 100 eas ease
+MacmiaNaratacein Cmts 200 ngs wo.s0€
+(Guantos Pay XL 1.90 23.08 zaase
+wuerra 35520 €
+DescuENso wre
+agen sage
+Total 412,03 €
+
