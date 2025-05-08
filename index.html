@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexión con MetaMask</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        h1 {
+            color: #f6851b;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #f6851b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #e2761b;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        #userInfo {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        #error {
+            color: #ff0000;
+            margin-top: 15px;
+        }
+        
+        .instructions {
+            text-align: left;
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #fff8e1;
+            border-left: 4px solid #f6851b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conectar con MetaMask</h1>
+        
+        <div class="instructions">
+            <h3>Instrucciones:</h3>
+            <ol>
+                <li>Instala la extensión de MetaMask en tu navegador si no lo has hecho.</li>
+                <li>Asegúrate de tener una cuenta creada en MetaMask.</li>
+                <li>Haz clic en el botón "Conectar MetaMask" para iniciar sesión.</li>
+            </ol>
+        </div>
+        
+        <button id="connectButton">Conectar MetaMask</button>
+        <button id="signButton" disabled>Firmar Mensaje</button>
+        <button id="disconnectButton" disabled>Desconectar</button>
+        
+        <div id="userInfo">
+            <h3>Información de la Wallet</h3>
+            <p><strong>Dirección:</strong> <span id="walletAddress"></span></p>
+            <p><strong>Balance:</strong> <span id="walletBalance"></span> ETH</p>
+            <p><strong>Red:</strong> <span id="walletNetwork"></span></p>
+        </div>
+        
+        <div id="error"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script>
+        // Elementos del DOM
+        const connectButton = document.getElementById('connectButton');
+        const signButton = document.getElementById('signButton');
+        const disconnectButton = document.getElementById('disconnectButton');
+        const walletAddress = document.getElementById('walletAddress');
+        const walletBalance = document.getElementById('walletBalance');
+        const walletNetwork = document.getElementById('walletNetwork');
+        const userInfo = document.getElementById('userInfo');
+        const errorDiv = document.getElementById('error');
+        
+        let web3;
+        let accounts = [];
+        
+        // Verificar si MetaMask está instalado
+        if (typeof window.ethereum === 'undefined') {
+            connectButton.disabled = true;
+            showError('MetaMask no está instalado. Por favor, instálalo para continuar.');
+        } else {
+            web3 = new Web3(window.ethereum);
+            
+            // Escuchar cambios de cuenta
+            window.ethereum.on('accountsChanged', (newAccounts) => {
+                accounts = newAccounts;
+                if (accounts.length > 0) {
+                    updateUserInfo();
+                } else {
+                    disconnect();
+                }
+            });
+            
+            // Escuchar cambios de red
+            window.ethereum.on('chainChanged', (chainId) => {
+                window.location.reload();
+            });
+        }
+        
+        // Conectar con MetaMask
+        connectButton.addEventListener('click', async () => {
+            try {
+                errorDiv.textContent = '';
+                
+                // Solicitar acceso a las cuentas
+                accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                if (accounts.length > 0) {
+                    connectButton.disabled = true;
+                    signButton.disabled = false;
+                    disconnectButton.disabled = false;
+                    userInfo.style.display = 'block';
+                    
+                    updateUserInfo();
+                }
+            } catch (error) {
+                showError('Error al conectar: ' + error.message);
+            }
+        });
+        
+        // Firmar mensaje
+        signButton.addEventListener('click', async () => {
+            try {
+                const message = "Por favor, firma este mensaje para autenticarte. Esto no generará ningún costo.";
+                const from = accounts[0];
+                
+                const signature = await web3.eth.personal.sign(message, from, '');
+                
+                alert(`Mensaje firmado correctamente!\n\nFirma: ${signature}`);
+            } catch (error) {
+                showError('Error al firmar: ' + error.message);
+            }
+        });
+        
+        // Desconectar
+        disconnectButton.addEventListener('click', () => {
+            disconnect();
+        });
+        
+        // Actualizar información del usuario
+        async function updateUserInfo() {
+            try {
+                const from = accounts[0];
+                walletAddress.textContent = from;
+                
+                // Obtener balance
+                const balance = await web3.eth.getBalance(from);
+                walletBalance.textContent = web3.utils.fromWei(balance, 'ether').substring(0, 8);
+                
+                // Obtener red
+                const chainId = await web3.eth.getChainId();
+                let networkName;
+                
+                switch(chainId) {
+                    case 1: networkName = "Ethereum Mainnet"; break;
+                    case 5: networkName = "Goerli Testnet"; break;
+                    case 11155111: networkName = "Sepolia Testnet"; break;
+                    case 137: networkName = "Polygon Mainnet"; break;
+                    case 80001: networkName = "Mumbai Testnet"; break;
+                    default: networkName = `Red desconocida (ID: ${chainId})`;
+                }
+                
+                walletNetwork.textContent = networkName;
+            } catch (error) {
+                showError('Error al obtener información: ' + error.message);
+            }
+        }
+        
+        // Desconectar wallet
+        function disconnect() {
+            accounts = [];
+            connectButton.disabled = false;
+            signButton.disabled = true;
+            disconnectButton.disabled = true;
+            userInfo.style.display = 'none';
+            errorDiv.textContent = '';
+        }
+        
+        // Mostrar error
+        function showError(message) {
+            errorDiv.textContent = message;
+            console.error(message);
+        }
+    </script>
+</body>
+</html>
