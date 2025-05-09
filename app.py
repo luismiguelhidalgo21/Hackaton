@@ -12,9 +12,10 @@ from pytesseract import image_to_string
 import logging
 import platform
 import sys
-import matplotlib.pyplot as plt  # Importar matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg  # Importar para integrar gráficos en tkinter
-from matplotlib.figure import Figure  # Importar para crear figuras de matplotlib
+import time
+from functools import wraps
+import hashlib
+from datetime import datetime
 
 class FacturacionApp:
     def __init__(self, root):
@@ -51,14 +52,37 @@ class FacturacionApp:
         # Configuración de OCR
         self.setup_ocr()
         
-        # Configuración de API
+        # Configuración de API mejorada
         self.API_URL = "https://api.deepseek.com/v1/chat/completions"
         self.API_KEY = "sk-5397f99b3feb44c9a51ec8a079f1b5a0"
+        self.API_RETRIES = 3
+        self.API_TIMEOUT = 30
         
         # Inicializar blockchain
         self.blockchain = Blockchain()
         self.current_image = None
         
+        # Cache para resultados de API
+        self.api_cache = {}
+        
+    def retry_api(max_retries=3, delay=1):
+        """Decorador para reintentar llamadas a la API"""
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                last_exception = None
+                for attempt in range(max_retries):
+                    try:
+                        return func(*args, **kwargs)
+                    except Exception as e:
+                        last_exception = e
+                        logging.warning(f"Intento {attempt + 1} fallido: {str(e)}")
+                        if attempt < max_retries - 1:
+                            time.sleep(delay * (attempt + 1))
+                raise last_exception
+            return wrapper
+        return decorator
+    
     def setup_ocr(self):
         """Configuración de OCR para Raspberry Pi"""
         try:
@@ -231,10 +255,6 @@ class FacturacionApp:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.txt_reporte.pack(fill=tk.BOTH, expand=True)
         
-        # Contenedor para el gráfico
-        self.graph_frame = ttk.Frame(report_tab)
-        self.graph_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
     def preprocess_image(self, img_path):
         """Preprocesamiento optimizado para OCR en RPi"""
         try:
@@ -298,8 +318,15 @@ class FacturacionApp:
             logging.error(f"Error en OCR: {str(e)}")
             return None
     
+    @retry_api(max_retries=3, delay=1)
     def analizar_con_api(self, img_path):
-        """Método para análisis con API"""
+        """Método mejorado para análisis con API con reintentos"""
+        # Verificar caché primero
+        img_hash = self.get_image_hash(img_path)
+        if img_hash in self.api_cache:
+            logging.info("Usando resultado en caché para la imagen")
+            return self.api_cache[img_hash]
+        
         try:
             # Validación de archivo
             if not os.path.exists(img_path):
@@ -311,7 +338,8 @@ class FacturacionApp:
 
             headers = {
                 "Authorization": f"Bearer {self.API_KEY}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
 
             prompt = """Extrae EXCLUSIVAMENTE el valor numérico del TOTAL de esta factura:
@@ -336,28 +364,42 @@ class FacturacionApp:
                     ]
                 }],
                 "temperature": 0.1,
-                "max_tokens": 30
+                "max_tokens": 30,
+                "timeout": self.API_TIMEOUT
             }
 
+            logging.info("Enviando solicitud a la API...")
             response = requests.post(
                 self.API_URL,
                 headers=headers,
                 json=payload,
-                timeout=30
+                timeout=self.API_TIMEOUT
             )
 
+            # Manejo especial de errores HTTP
             if response.status_code != 200:
-                error_msg = f"Error API (Código: {response.status_code})"
+                error_msg = f"Error en API (Código: {response.status_code})"
                 try:
                     error_detail = response.json().get('error', {}).get('message', '')
                     error_msg += f"\nDetalle: {error_detail}"
-                except:
+                except json.JSONDecodeError:
                     error_msg += "\nRespuesta no es JSON válido"
                 raise ValueError(error_msg)
 
-            contenido = response.json()
-            monto_texto = contenido["choices"][0]["message"]["content"]
-            return self.procesar_respuesta_api(monto_texto)
+            # Validación de respuesta JSON
+            try:
+                contenido = response.json()
+                monto_texto = contenido["choices"][0]["message"]["content"]
+                monto = self.procesar_respuesta_api(monto_texto)
+                
+                # Almacenar en caché
+                if monto is not None:
+                    self.api_cache[img_hash] = monto
+                
+                return monto
+            except (KeyError, json.JSONDecodeError) as e:
+                logging.error(f"Error procesando respuesta API: {str(e)}")
+                raise ValueError("La API devolvió una respuesta no válida")
 
         except requests.exceptions.RequestException as e:
             logging.error(f"Error de conexión: {str(e)}")
@@ -366,16 +408,25 @@ class FacturacionApp:
             logging.error(f"Error inesperado: {str(e)}")
             raise
     
+    def get_image_hash(self, img_path):
+        """Generar hash único para la imagen para usar como clave de caché"""
+        try:
+            with open(img_path, "rb") as f:
+                return hashlib.md5(f.read()).hexdigest()
+        except Exception:
+            return str(os.path.getmtime(img_path))
+    
     def procesar_respuesta_api(self, texto):
-        """Procesamiento de respuesta de API"""
+        """Procesamiento mejorado de respuesta de API"""
         try:
             texto = texto.replace(',', '.').upper()
             
+            # Patrones mejorados para identificar TOTAL
             patrones = [
-                r'TOTAL[\s:]*([\d.,]+\d{2})',
-                r'([\d]{1,3}(?:[.,]\d{3})*[.,]\d{2})\s*€?$',
-                r'IMPORTE[\s:]*([\d.,]+\d{2})',
-                r'([\d]+[.,]\d{2})\s*$'
+                r'TOTAL[\s:]*([\d.,]+\d{2})',  # Para "TOTAL: 199.55"
+                r'([\d]{1,3}(?:[.,]\d{3})*[.,]\d{2})\s*€?$',  # Para "199.55 €"
+                r'IMPORTE[\s:]*([\d.,]+\d{2})',  # Para "IMPORTE: 199.55"
+                r'([\d]+[.,]\d{2})\s*$'  # Para "199.55" al final
             ]
             
             for patron in patrones:
@@ -384,12 +435,12 @@ class FacturacionApp:
                     monto_str = match.group(1).replace('.', '').replace(',', '.')
                     try:
                         monto = float(monto_str)
-                        if 0.01 <= monto <= 1000000:
-                            return monto
+                        if 0.01 <= monto <= 1000000:  # Validación de rango
+                            return round(monto, 2)
                     except ValueError:
                         continue
             
-            # Fallback: Buscar el número más grande con decimales
+            # Fallback mejorado: Buscar el número más grande con decimales
             numeros = re.findall(r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})', texto)
             if numeros:
                 montos = []
@@ -401,7 +452,7 @@ class FacturacionApp:
                     except ValueError:
                         continue
                 if montos:
-                    return max(montos)
+                    return round(max(montos), 2)
                     
             return None
         except Exception as e:
@@ -409,7 +460,7 @@ class FacturacionApp:
             return None
     
     def cargar_documento(self):
-        """Manejo de carga de documentos optimizado"""
+        """Manejo mejorado de carga de documentos con priorización"""
         filetypes = [
             ("Imágenes", "*.jpg *.jpeg *.png"),
             ("Todos los archivos", "*.*")
@@ -439,21 +490,21 @@ class FacturacionApp:
             else:
                 self.lbl_imagen.config(text="📄 Documento cargado")
             
-            # En RPi, priorizar OCR local
+            # Estrategia mejorada: Primero OCR local si es RPi
             if self.is_rpi:
                 monto = self.analizar_con_ocr(path)
                 if monto is not None:
                     self.registrar_factura(path, monto)
                     return
             
-            # Si no es RPi o falló OCR, intentar con API
+            # Luego intentar con API (con reintentos automáticos)
             try:
                 monto = self.analizar_con_api(path)
                 if monto is not None:
                     self.registrar_factura(path, monto)
                     return
             except Exception as api_error:
-                logging.warning(f"Fallo en API: {str(api_error)}")
+                logging.warning(f"Fallo en API después de reintentos: {str(api_error)}")
                 if not self.is_rpi:
                     self.lbl_resultado.config(text="⚠️ Fallo API, usando OCR...", foreground="orange")
                     self.root.update()
@@ -573,7 +624,7 @@ class FacturacionApp:
             self.cargar_documento()
     
     def generar_reporte(self):
-        """Generación de reporte optimizada con gráficos"""
+        """Generación de reporte optimizada"""
         periodo = self.cbo_periodo.get().lower()
         datos = self.blockchain.generate_report(periodo)
         
@@ -588,54 +639,20 @@ class FacturacionApp:
         
         # Resumen
         self.txt_reporte.insert(tk.END, f" ▪ Período: {periodo.capitalize()}\n")
-        self.txt_reporte.insert(tk.END, f" ▪ Facturas: {len(datos['facturas'])}\n")
-        self.txt_reporte.insert(tk.END, f" ▪ Total: {datos['total']:,.2f} €\n\n")
+        self.txt_reporte.insert(tk.END, f" ▪ Facturas procesadas: {len(datos['facturas'])}\n")
+        self.txt_reporte.insert(tk.END, f" ▪ Total facturado: {datos['total']:,.2f} €\n\n")
         
         # Detalle
         if datos['facturas']:
-            self.txt_reporte.insert(tk.END, " 📋 Detalle:\n")
+            self.txt_reporte.insert(tk.END, " 📋 Detalle de Facturas:\n")
             for factura in datos['facturas']:
                 self.txt_reporte.insert(tk.END, 
                     f" • {factura['nombre_archivo'][:30]: <32} {factura['monto']: >8.2f} €\n")
         else:
-            self.txt_reporte.insert(tk.END, " ℹ️ No hay facturas para este período\n")
+            self.txt_reporte.insert(tk.END, " ℹ️ No se encontraron facturas para este período\n")
         
         self.txt_reporte.insert(tk.END, "\n" + "═" * 60, "center")
         self.txt_reporte.config(state=tk.DISABLED)
-        
-        # Generar gráfico
-        self.mostrar_grafico(datos)
-
-    def mostrar_grafico(self, datos):
-        """Generar y mostrar gráfico de pastel en la pestaña de reportes"""
-        # Limpiar el contenedor del gráfico
-        for widget in self.graph_frame.winfo_children():
-            widget.destroy()
-
-        if not datos['facturas']:
-            messagebox.showinfo("Sin datos", "No hay facturas para generar el gráfico.")
-            return
-
-        # Extraer datos para el gráfico
-        nombres = [factura['nombre_archivo'] for factura in datos['facturas']]
-        montos = [factura['monto'] for factura in datos['facturas']]
-
-        # Crear figura de matplotlib
-        fig = Figure(figsize=(6, 6), dpi=100)
-        ax = fig.add_subplot(111)
-        ax.pie(
-            montos,
-            labels=nombres,
-            autopct='%1.1f%%',  # Mostrar porcentajes
-            startangle=90,  # Rotar para que el primer segmento comience en la parte superior
-            colors=plt.cm.Paired.colors  # Colores predefinidos
-        )
-        ax.set_title("Distribución de Facturación")
-
-        # Incrustar el gráfico en tkinter
-        canvas = FigureCanvasTkAgg(fig, master=self.graph_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
 if __name__ == "__main__":
     root = tk.Tk()
