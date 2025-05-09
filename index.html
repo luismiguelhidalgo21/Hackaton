@@ -62,6 +62,7 @@
             margin-bottom: 1rem;
             background: linear-gradient(to right, var(--light), var(--secondary));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 10px rgba(255, 171, 0, 0.3);
             animation: glow 2s infinite alternate;
@@ -158,6 +159,19 @@
             font-size: 3rem;
             margin-bottom: 1.5rem;
             color: var(--secondary);
+        }
+
+        .feature-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover .feature-img {
+            transform: scale(1.05);
         }
 
         .feature-title {
@@ -393,6 +407,17 @@
             100% { transform: scale(1); }
         }
 
+        /* Efecto de partículas */
+        #particles-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             h1 {
@@ -408,6 +433,9 @@
     </style>
 </head>
 <body>
+    <!-- Fondo de partículas -->
+    <div id="particles-bg"></div>
+
     <header>
         <div id="particles-js" class="particles"></div>
         <div class="header-content">
@@ -423,32 +451,32 @@
             <h2 class="section-title">Innovaciones Clave</h2>
             <div class="features">
                 <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
+                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Procesamiento en tiempo real" class="feature-img">
                     <h3 class="feature-title">Procesamiento en Tiempo Real</h3>
                     <p>Analiza recibos y facturas al instante con algoritmos de visión por computadora optimizados para Raspberry Pi.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
+                    <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Reconocimiento inteligente" class="feature-img">
                     <h3 class="feature-title">Reconocimiento Inteligente</h3>
                     <p>Identifica automáticamente proveedores, montos, fechas y categorías con un 98% de precisión.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Reportes automatizados" class="feature-img">
                     <h3 class="feature-title">Reportes Automatizados</h3>
                     <p>Genera informes presupuestarios detallados con visualizaciones interactivas y exportables.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Aprendizaje continuo" class="feature-img">
                     <h3 class="feature-title">Aprendizaje Continuo</h3>
                     <p>El sistema mejora con cada análisis, adaptándose a tus patrones de gastos específicos.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Privacidad garantizada" class="feature-img">
                     <h3 class="feature-title">Privacidad Garantizada</h3>
                     <p>Todos los datos se procesan localmente en tu Raspberry Pi, sin enviar información a la nube.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">💡</div>
+                    <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Bajo consumo" class="feature-img">
                     <h3 class="feature-title">Bajo Consumo</h3>
                     <p>Diseñado para ser eficiente energéticamente, consumiendo menos de 5W de potencia.</p>
                 </div>
@@ -461,7 +489,7 @@
             <h2>Potencia de Raspberry Pi</h2>
             <p>PiBudget aprovecha al máximo el hardware asequible de Raspberry Pi, demostrando que no se necesitan costosos servidores para implementar soluciones avanzadas de inteligencia artificial y procesamiento de documentos.</p>
             <div class="pi-image floating">
-                <img src="https://www.raspberrypi.com/app/uploads/2022/02/COLOUR-Raspberry-Pi-4-Model-B-1-1617x1080.jpg" alt="Raspberry Pi">
+                <img src="raspberry.png" alt="Raspberry Pi">
             </div>
         </div>
     </div>
@@ -523,6 +551,7 @@
             <h2 class="section-title">¿Por qué elegir PiBudget?</h2>
             <div class="comparison">
                 <div class="comparison-card">
+                    <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Solución tradicional" class="feature-img">
                     <h3 class="comparison-title">Solución Tradicional</h3>
                     <ul class="pros">
                         <li>Requiere computadora potente</li>
@@ -533,6 +562,7 @@
                     </ul>
                 </div>
                 <div class="comparison-card">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="PiBudget" class="feature-img">
                     <h3 class="comparison-title">PiBudget</h3>
                     <ul class="pros">
                         <li>Funciona en Raspberry Pi ($35)</li>
@@ -559,117 +589,167 @@
                 <a href="#" aria-label="YouTube">📺</a>
                 <a href="#" aria-label="Facebook">📘</a>
             </div>
-            <p class="copyright">© 2023 PiBudget - Todos los derechos reservados</p>
+            <p class="copyright">© 2025 PiBudget - Todos los derechos reservados</p>
         </div>
     </footer>
 
+    <!-- Scripts de partículas -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
     <script>
-        // Inicializar partículas
-        particlesJS("particles-js", {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
+        // Configuración de partículas para el fondo
+        particlesJS('particles-bg', {
+            particles: {
+                number: {
+                    value: 60,
+                    density: {
+                        enable: true,
+                        value_area: 800
                     }
                 },
-                "color": {
-                    "value": "#ffffff"
+                color: {
+                    value: "#ffffff"
                 },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    }
+                },
+                opacity: {
+                    value: 0.1,
+                    random: false,
+                    anim: {
+                        enable: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
                     },
-                    "polygon": {
-                        "nb_sides": 5
-                    }
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    },
+                    resize: true
                 },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 3,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 2,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false,
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
+                modes: {
+                    repulse: {
+                        distance: 100,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
                     }
                 }
             },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "grab"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
+            retina_detect: true
+        });
+
+        // Configuración de partículas para el encabezado
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
                 },
-                "modes": {
-                    "grab": {
-                        "distance": 140,
-                        "line_linked": {
-                            "opacity": 1
-                        }
+                color: {
+                    value: "#ffffff"
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: false,
+                    anim: {
+                        enable: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
                     },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
+                    onclick: {
+                        enable: true,
+                        mode: "push"
                     },
-                    "repulse": {
-                        "distance": 200,
-                        "duration": 0.4
+                    resize: true
+                },
+                modes: {
+                    repulse: {
+                        distance: 100,
+                        duration: 0.4
                     },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
+                    push: {
+                        particles_nb: 4
                     }
                 }
             },
-            "retina_detect": true
+            retina_detect: true
         });
 
         // Efecto de escritura en terminal
