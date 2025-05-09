@@ -1,4 +1,3 @@
-# blockchain.py (sin cambios)
 import hashlib
 import json
 import os
@@ -9,11 +8,12 @@ class Block:
     def __init__(self, index, timestamp, factura_data, previous_hash):
         self.index = index
         self.timestamp = timestamp
-        self.factura_data = factura_data  # { "nombre_archivo": "factura1.jpg", "monto": 150.50 }
+        self.factura_data = factura_data
         self.previous_hash = previous_hash
         self.hash = self.calculate_hash()
 
     def calculate_hash(self):
+        """Hash optimizado para RPi"""
         block_string = json.dumps({
             "index": self.index,
             "timestamp": self.timestamp,
@@ -29,47 +29,58 @@ class Blockchain:
         os.makedirs(self.facturas_dir, exist_ok=True)
 
     def create_genesis_block(self):
-        return Block(0, datetime.now().isoformat(), {"nombre_archivo": "genesis", "monto": 0}, "0")
+        return Block(0, datetime.now().isoformat(), 
+                   {"nombre_archivo": "genesis", "monto": 0}, "0")
 
     def add_factura(self, imagen_path, monto):
-        # Validar si el archivo es una imagen válida
+        """Método optimizado para RPi"""
         try:
-            img = Image.open(imagen_path)
-            img.verify()  # Verifica si es una imagen válida
-        except (UnidentifiedImageError, FileNotFoundError):
-            raise ValueError("El archivo proporcionado no es una imagen válida o no existe.")
+            # Verificación de imagen optimizada
+            with Image.open(imagen_path) as img:
+                img.verify()  # Verificación rápida
+                img = Image.open(imagen_path)  # Reabrir para guardar
+                
+                # Guardar imagen optimizada
+                img_name = os.path.basename(imagen_path)
+                save_path = os.path.join(self.facturas_dir, img_name)
+                
+                if os.path.exists(save_path):
+                    raise FileExistsError(f"Archivo '{img_name}' ya existe")
+                
+                # Guardar con calidad reducida para ahorrar espacio
+                img.save(save_path, quality=85)
 
-        # Guardar imagen en carpeta
-        img_name = os.path.basename(imagen_path)
-        save_path = os.path.join(self.facturas_dir, img_name)
-
-        if os.path.exists(save_path):
-            raise FileExistsError(f"El archivo '{img_name}' ya existe en el directorio de facturas.")
-
-        img = Image.open(imagen_path)  # Reabrir para guardar
-        img.save(save_path)
-
-        # Crear bloque
-        new_block = Block(
-            index=len(self.chain),
-            timestamp=datetime.now().isoformat(),
-            factura_data={"nombre_archivo": img_name, "monto": monto},
-            previous_hash=self.chain[-1].hash
-        )
-        self.chain.append(new_block)
-        return new_block
+            # Crear bloque
+            new_block = Block(
+                index=len(self.chain),
+                timestamp=datetime.now().isoformat(),
+                factura_data={"nombre_archivo": img_name, "monto": monto},
+                previous_hash=self.chain[-1].hash
+            )
+            self.chain.append(new_block)
+            return new_block
+            
+        except (UnidentifiedImageError, FileNotFoundError) as e:
+            raise ValueError("Archivo no es una imagen válida")
+        except Exception as e:
+            raise
 
     def generate_report(self, periodo="mensual"):
+        """Generación de reportes optimizada"""
         reporte = {"total": 0, "facturas": []}
         hoy = datetime.now()
 
         for block in self.chain[1:]:  # Ignorar bloque génesis
-            block_date = datetime.fromisoformat(block.timestamp)  # Convertir de string a datetime
+            block_date = datetime.fromisoformat(block.timestamp)
+            
+            # Lógica de periodo optimizada
             if periodo == "semanal" and (hoy - block_date).days <= 7:
                 reporte["facturas"].append(block.factura_data)
             elif periodo == "mensual" and block_date.month == hoy.month and block_date.year == hoy.year:
                 reporte["facturas"].append(block.factura_data)
             elif periodo == "anual" and block_date.year == hoy.year:
+                reporte["facturas"].append(block.factura_data)
+            elif periodo == "completo":
                 reporte["facturas"].append(block.factura_data)
 
         reporte["total"] = sum(f["monto"] for f in reporte["facturas"])

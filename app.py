@@ -10,21 +10,24 @@ from blockchain import Blockchain
 import pytesseract
 from pytesseract import image_to_string
 import logging
+import threading
+import time
 
 class FacturacionApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🧾 Facturación Inteligente v7.0")
-        self.root.geometry("1100x850")
+        self.root.title("🧾 Facturación Inteligente v7.0 (RPi)")
+        self.root.geometry("800x600")
         
-        # Configuración de logging
+        # Configuración de logging optimizada
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(levelname)s - %(message)s',
-            filename='facturacion.log'
+            filename='facturacion.log',
+            filemode='a'
         )
         
-        # Configuración mejorada de OCR
+        # Configuración mejorada de OCR para RPi
         self.setup_ocr()
         
         # Configuración de API
@@ -36,27 +39,18 @@ class FacturacionApp:
             
         self.blockchain = Blockchain()
         self.current_image = None
+        self.processing = False
         self.setup_ui()
 
     def setup_ocr(self):
-        """Configuración robusta de Tesseract OCR"""
+        """Configuración optimizada de Tesseract OCR para RPi"""
         try:
-            # Detección automática de rutas
-            possible_paths = [
-                r'C:\Program Files\Tesseract-OCR\tesseract.exe',
-                r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
-                '/usr/bin/tesseract',
-                '/usr/local/bin/tesseract'
-            ]
+            # Ruta específica para Raspberry Pi
+            pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+            os.environ['TESSDATA_PREFIX'] = '/usr/share/tesseract-ocr/4.00/tessdata'
             
-            for path in possible_paths:
-                if os.path.exists(path):
-                    pytesseract.pytesseract.tesseract_cmd = path
-                    os.environ['TESSDATA_PREFIX'] = os.path.join(os.path.dirname(path), 'tessdata')
-                    break
-            
-            # Verificación de idiomas instalados
-            if not os.path.exists(os.path.join(os.environ.get('TESSDATA_PREFIX', ''), 'spa.traineddata')):
+            # Verificar si el idioma español está instalado
+            if not os.path.exists('/usr/share/tesseract-ocr/4.00/tessdata/spa.traineddata'):
                 logging.warning("Datos de idioma español no encontrados")
                 messagebox.showwarning(
                     "Configuración OCR",
@@ -70,47 +64,20 @@ class FacturacionApp:
                 "El análisis de imágenes estará limitado."
             )
 
-    def obtener_api_key(self):
-        """Obtención segura de API key con validación"""
-        for intento in range(3):
-            api_key = simpledialog.askstring(
-                "Configuración API",
-                f"Ingrese su API Key de DeepSeek (Intento {intento + 1}/3):",
-                parent=self.root,
-                show='*'
-            )
-            if api_key and len(api_key) > 30:
-                if self.validar_api_key(api_key):
-                    return api_key
-                else:
-                    messagebox.showerror("Error", "API Key no válida o sin permisos")
-        messagebox.showerror("Error", "No se proporcionó una API Key válida")
-        return None
-
-    def validar_api_key(self, api_key):
-        """Validación de la API Key"""
-        try:
-            headers = {"Authorization": f"Bearer {api_key}"}
-            response = requests.get(
-                "https://api.deepseek.com/v1/models",
-                headers=headers,
-                timeout=10
-            )
-            return response.status_code == 200
-        except Exception as e:
-            logging.error(f"Error validando API Key: {str(e)}")
-            return False
-
     def analizar_con_api(self, img_path):
-        """Método robusto para análisis con API"""
+        """Método optimizado para RPi con manejo de tiempo de espera"""
         try:
-            # Validación de archivo
-            if not os.path.exists(img_path):
-                raise FileNotFoundError("Archivo no encontrado")
+            # Reducir tamaño de imagen antes de enviar
+            with Image.open(img_path) as img:
+                img.thumbnail((800, 800))  # Reducir tamaño para API
+                temp_path = "/tmp/temp_img.jpg"
+                img.save(temp_path, "JPEG", quality=85)
             
-            # Procesamiento de imagen
-            with open(img_path, "rb") as img_file:
+            with open(temp_path, "rb") as img_file:
                 img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+            
+            # Eliminar archivo temporal
+            os.remove(temp_path)
 
             headers = {
                 "Authorization": f"Bearer {self.API_KEY}",
@@ -118,23 +85,17 @@ class FacturacionApp:
                 "Accept": "application/json"
             }
 
-            prompt = """Extrae EXCLUSIVAMENTE el valor numérico del TOTAL de esta factura:
-1. Busca específicamente "TOTAL" en mayúsculas
-2. Ignora porcentajes como 1.0%, 2.5%, etc.
-3. Devuelve solo el número con dos decimales
-4. Ejemplo: Para "TOTAL 199.55 €" devuelve 199.55"""
-
             payload = {
                 "model": "deepseek-vision",
                 "messages": [{
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": prompt},
+                        {"type": "text", "text": "Extrae el valor numérico del TOTAL de esta factura"},
                         {
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{img_base64}",
-                                "detail": "high"
+                                "detail": "low"  # Reducir detalle para ahorrar ancho de banda
                             }
                         }
                     ]
@@ -144,15 +105,14 @@ class FacturacionApp:
                 "top_p": 0.9
             }
 
-            logging.info("Enviando solicitud a la API...")
+            # Timeout más corto para RPi
             response = requests.post(
                 self.API_URL,
                 headers=headers,
                 json=payload,
-                timeout=60
+                timeout=30  # Reducido de 60 a 30 segundos
             )
 
-            # Manejo especial de errores HTTP
             if response.status_code != 200:
                 error_msg = f"Error en API (Código: {response.status_code})"
                 try:
@@ -162,7 +122,6 @@ class FacturacionApp:
                     error_msg += "\nRespuesta no es JSON válido"
                 raise ValueError(error_msg)
 
-            # Validación de respuesta JSON
             try:
                 contenido = response.json()
                 monto_texto = contenido["choices"][0]["message"]["content"]
@@ -179,17 +138,14 @@ class FacturacionApp:
             raise
 
     def procesar_respuesta_api(self, texto):
-        """Procesamiento avanzado de respuesta de API"""
+        """Procesamiento optimizado de respuesta de API"""
         try:
-            # Limpieza de texto
             texto = texto.replace(',', '.').upper()
             
-            # Patrones para identificar TOTAL
+            # Patrones simplificados para reducir carga de CPU
             patrones = [
-                r'TOTAL[\s:]*([\d.,]+\d{2})',  # Para "TOTAL: 199.55"
-                r'([\d]{1,3}(?:[.,]\d{3})*[.,]\d{2})\s*€?$',  # Para "199.55 €"
-                r'IMPORTE[\s:]*([\d.,]+\d{2})',  # Para "IMPORTE: 199.55"
-                r'([\d]+[.,]\d{2})\s*$'  # Para "199.55" al final
+                r'TOTAL[\s:]*([\d.,]+\d{2})',
+                r'([\d]+[.,]\d{2})\s*$'
             ]
             
             for patron in patrones:
@@ -198,101 +154,75 @@ class FacturacionApp:
                     monto_str = match.group(1).replace('.', '').replace(',', '.')
                     try:
                         monto = float(monto_str)
-                        if 0.01 <= monto <= 1000000:  # Validación de rango
+                        if 0.01 <= monto <= 1000000:
                             return monto
                     except ValueError:
                         continue
             
-            # Fallback: Buscar el número más grande con decimales
-            numeros = re.findall(r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})', texto)
-            if numeros:
-                montos = []
-                for num in numeros:
-                    try:
-                        monto = float(num.replace('.', '').replace(',', '.'))
-                        if 0.01 <= monto <= 1000000:
-                            montos.append(monto)
-                    except ValueError:
-                        continue
-                if montos:
-                    return max(montos)
-                    
             return None
         except Exception as e:
             logging.error(f"Error procesando respuesta: {str(e)}")
             return None
 
     def analizar_con_ocr(self, img_path):
-        """Método de respaldo con OCR mejorado"""
+        """OCR optimizado para RPi con preprocesamiento ligero"""
         try:
-            # Preprocesamiento de imagen
-            img = Image.open(img_path)
+            # Preprocesamiento optimizado para RPi
+            with Image.open(img_path) as img:
+                # Convertir a escala de grises y ajustar tamaño
+                img = img.convert('L')
+                img = img.resize((800, 800), Image.LANCZOS)  # Reducir tamaño para OCR
+                
+                # Aumentar contraste con método más ligero
+                img = img.point(lambda x: 0 if x < 128 else 255)
             
-            # Convertir a escala de grises y aumentar contraste
-            img = img.convert('L')
-            img = img.point(lambda x: 0 if x < 140 else 255)
+                # Configuración para facturas en español (más ligera)
+                custom_config = r'--oem 1 --psm 6 -l spa'  # OEM 1 es más rápido que 3
             
-            # Configuración para facturas en español
-            custom_config = r'--oem 3 --psm 6 -l spa+eng'
-            
-            # Análisis OCR
-            text = image_to_string(img, config=custom_config)
-            logging.info(f"Texto extraído por OCR:\n{text}")
-            
-            # Búsqueda inteligente del TOTAL
-            lineas = text.split('\n')
-            for linea in reversed(lineas):  # Buscar desde el final
-                if "TOTAL" in linea.upper():
-                    # Extraer el valor numérico
-                    match = re.search(r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})', linea)
-                    if match:
-                        try:
-                            monto_str = match.group(1).replace('.', '').replace(',', '.')
-                            monto = float(monto_str)
-                            if 0.01 <= monto <= 1000000:
-                                return monto
-                        except ValueError:
-                            continue
-            
-            # Fallback: Buscar el número más grande que parezca un total
-            numeros = re.findall(r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})', text)
-            if numeros:
-                montos = []
-                for num in numeros:
-                    try:
-                        monto = float(num.replace('.', '').replace(',', '.'))
-                        if 0.01 <= monto <= 1000000:
-                            montos.append(monto)
-                    except ValueError:
-                        continue
-                if montos:
-                    return max(montos)
-                    
-            return None
+                # Análisis OCR
+                text = image_to_string(img, config=custom_config)
+                logging.info(f"Texto extraído por OCR:\n{text}")
+                
+                # Búsqueda simplificada del TOTAL
+                lineas = text.split('\n')
+                for linea in reversed(lineas):
+                    if "TOTAL" in linea.upper():
+                        match = re.search(r'(\d+[.,]\d{2})', linea)
+                        if match:
+                            try:
+                                monto_str = match.group(1).replace('.', '').replace(',', '.')
+                                monto = float(monto_str)
+                                if 0.01 <= monto <= 1000000:
+                                    return monto
+                            except ValueError:
+                                continue
+                
+                return None
         except Exception as e:
             logging.error(f"Error en análisis OCR: {str(e)}")
             return None
 
     def setup_ui(self):
-        """Configuración de interfaz gráfica"""
+        """Interfaz optimizada para RPi"""
         style = ttk.Style()
         style.theme_use("clam")
+        style.configure(".", font=("Arial", 10))
         style.configure("TFrame", background="#f5f7fa")
-        style.configure("TButton", font=("Arial", 10), padding=8, background="#5b7bb4", foreground="white")
+        style.configure("TButton", padding=6, background="#5b7bb4", foreground="white")
         style.map("TButton", background=[("active", "#46649b")])
 
         # Frame principal
-        main_frame = ttk.Frame(self.root, padding=(20, 10))
+        main_frame = ttk.Frame(self.root, padding=(10, 5))
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Título
         title_frame = ttk.Frame(main_frame)
-        title_frame.pack(fill=tk.X, pady=(0, 15))
+        title_frame.pack(fill=tk.X, pady=(0, 10))
         
         ttk.Label(
             title_frame,
-            text="🏷️ Sistema de Facturación Inteligente",
-            font=("Arial", 20, "bold"),
+            text="🏷️ Facturación Inteligente",
+            font=("Arial", 16, "bold"),
             background="#f5f7fa"
         ).pack()
 
@@ -304,15 +234,15 @@ class FacturacionApp:
         upload_tab = ttk.Frame(notebook)
         notebook.add(upload_tab, text="📤 Subir Factura")
 
-        # Panel de control
+        # Panel de control simplificado
         control_frame = ttk.Frame(upload_tab)
-        control_frame.pack(pady=15, fill=tk.X)
+        control_frame.pack(pady=10, fill=tk.X)
 
         ttk.Button(
             control_frame,
             text="Seleccionar Factura",
-            command=self.cargar_documento,
-            width=20
+            command=self.cargar_documento_thread,
+            width=18
         ).pack(side=tk.LEFT, padx=5)
 
         self.btn_reintentar = ttk.Button(
@@ -320,13 +250,13 @@ class FacturacionApp:
             text="Reanalizar",
             command=self.reintentar_analisis,
             state=tk.DISABLED,
-            width=15
+            width=12
         )
         self.btn_reintentar.pack(side=tk.LEFT)
 
-        # Área de visualización
+        # Área de visualización optimizada
         display_frame = ttk.Frame(upload_tab)
-        display_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+        display_frame.pack(fill=tk.BOTH, expand=True, pady=5)
 
         self.lbl_imagen = ttk.Label(display_frame)
         self.lbl_imagen.pack()
@@ -334,31 +264,31 @@ class FacturacionApp:
         self.lbl_resultado = ttk.Label(
             display_frame,
             text="Monto detectado: -",
-            font=("Arial", 14, "bold"),
+            font=("Arial", 12),
             foreground="#333",
             background="#f5f7fa"
         )
-        self.lbl_resultado.pack(pady=15)
+        self.lbl_resultado.pack(pady=10)
 
-        # Pestaña de Reportes
+        # Pestaña de Reportes optimizada
         report_tab = ttk.Frame(notebook)
         notebook.add(report_tab, text="📊 Reportes")
 
         # Controles de reporte
         report_control = ttk.Frame(report_tab)
-        report_control.pack(pady=15)
+        report_control.pack(pady=10)
 
         ttk.Label(
             report_control,
             text="Periodo:",
-            font=("Arial", 11)
+            font=("Arial", 10)
         ).pack(side=tk.LEFT, padx=5)
 
         self.cbo_periodo = ttk.Combobox(
             report_control,
             values=["Semanal", "Mensual", "Anual", "Completo"],
             state="readonly",
-            width=12
+            width=10
         )
         self.cbo_periodo.current(1)
         self.cbo_periodo.pack(side=tk.LEFT, padx=5)
@@ -367,23 +297,22 @@ class FacturacionApp:
             report_control,
             text="Generar",
             command=self.generar_reporte,
-            width=10
-        ).pack(side=tk.LEFT, padx=10)
+            width=8
+        ).pack(side=tk.LEFT, padx=5)
 
-        # Área de reporte
+        # Área de reporte optimizada
         report_display = ttk.Frame(report_tab)
-        report_display.pack(fill=tk.BOTH, expand=True, padx=10, pady=(0, 10))
+        report_display.pack(fill=tk.BOTH, expand=True, padx=5, pady=(0, 5))
 
         self.txt_reporte = tk.Text(
             report_display,
-            height=18,
-            width=90,
-            font=("Consolas", 10),
+            height=12,
+            width=70,
+            font=("Consolas", 9),
             wrap=tk.WORD,
-            padx=15,
-            pady=15,
-            bg="#fafafa",
-            relief=tk.FLAT
+            padx=10,
+            pady=10,
+            bg="#fafafa"
         )
         scrollbar = ttk.Scrollbar(report_display, command=self.txt_reporte.yview)
         self.txt_reporte.configure(yscrollcommand=scrollbar.set)
@@ -391,8 +320,11 @@ class FacturacionApp:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.txt_reporte.pack(fill=tk.BOTH, expand=True)
 
-    def cargar_documento(self):
-        """Manejo de carga de documentos con retroalimentación"""
+    def cargar_documento_thread(self):
+        """Manejo de carga en segundo plano para no bloquear la UI"""
+        if self.processing:
+            return
+            
         filetypes = [
             ("Imágenes", "*.jpg *.jpeg *.png"),
             ("Todos los archivos", "*.*")
@@ -406,27 +338,34 @@ class FacturacionApp:
         if not path:
             return
 
+        self.processing = True
         self.current_image = path
         self.btn_reintentar.config(state=tk.NORMAL)
         self.lbl_resultado.config(text="🔍 Analizando...", foreground="#5b7bb4")
         self.root.update()
 
+        # Usar un hilo para no bloquear la interfaz
+        threading.Thread(target=self.procesar_documento, args=(path,), daemon=True).start()
+
+    def procesar_documento(self, path):
+        """Procesamiento del documento en segundo plano"""
         try:
-            # Vista previa para imágenes
+            # Vista previa optimizada para RPi
             if path.lower().endswith(('.jpg', '.jpeg', '.png')):
                 img = Image.open(path)
-                img.thumbnail((450, 450))
+                img.thumbnail((400, 400))  # Tamaño más pequeño para RPi
                 img_tk = ImageTk.PhotoImage(img)
                 self.lbl_imagen.config(image=img_tk)
                 self.lbl_imagen.image = img_tk
             else:
-                self.lbl_imagen.config(text="📄 Documento cargado (vista previa no disponible)")
+                self.lbl_imagen.config(text="📄 Documento cargado")
 
             # Primero intentar con API
             try:
                 monto = self.analizar_con_api(path)
                 if monto is not None:
                     self.registrar_factura(path, monto)
+                    self.processing = False
                     return
             except Exception as api_error:
                 logging.warning(f"Fallo en API: {str(api_error)}")
@@ -438,6 +377,7 @@ class FacturacionApp:
                 monto = self.analizar_con_ocr(path)
                 if monto is not None:
                     self.registrar_factura(path, monto)
+                    self.processing = False
                     return
             except Exception as ocr_error:
                 logging.warning(f"Fallo en OCR: {str(ocr_error)}")
@@ -451,23 +391,18 @@ class FacturacionApp:
             logging.error(f"Error general: {str(e)}")
             messagebox.showerror(
                 "Error",
-                f"No se pudo procesar el documento:\n{str(e)}\n\n"
-                "Consulte el archivo facturacion.log para más detalles."
+                f"No se pudo procesar el documento:\n{str(e)}"
             )
+        finally:
+            self.processing = False
 
     def registrar_factura(self, path, monto):
-        """Registro de factura con manejo de errores"""
+        """Registro de factura optimizado"""
         try:
             self.blockchain.add_factura(path, monto)
             self.lbl_resultado.config(
-                text=f"✅ Total registrado: {monto:.2f} €",
+                text=f"✅ Total: {monto:.2f} €",
                 foreground="#2e7d32"
-            )
-            messagebox.showinfo(
-                "Éxito",
-                f"Factura registrada correctamente:\n\n"
-                f"Archivo: {os.path.basename(path)}\n"
-                f"Monto: {monto:.2f} €"
             )
         except Exception as e:
             logging.error(f"Error registrando factura: {str(e)}")
@@ -477,29 +412,29 @@ class FacturacionApp:
             )
 
     def solicitar_monto_manual(self, path):
-        """Interfaz para entrada manual mejorada"""
+        """Interfaz manual optimizada"""
         manual_window = tk.Toplevel(self.root)
         manual_window.title("Registro Manual")
-        manual_window.geometry("500x500")
+        manual_window.geometry("400x400")  # Ventana más pequeña
         
         # Frame principal
         main_frame = ttk.Frame(manual_window)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
 
-        # Vista previa
+        # Vista previa optimizada
         if path.lower().endswith(('.jpg', '.jpeg', '.png')):
             img = Image.open(path)
             img.thumbnail((300, 300))
             img_tk = ImageTk.PhotoImage(img)
-            ttk.Label(main_frame, image=img_tk).pack(pady=10)
+            ttk.Label(main_frame, image=img_tk).pack(pady=5)
             manual_window.image = img_tk
 
         # Instrucciones
         ttk.Label(
             main_frame,
-            text="Ingrese el monto TOTAL del recibo:",
-            font=("Arial", 11)
-        ).pack(pady=(10, 5))
+            text="Ingrese el monto TOTAL:",
+            font=("Arial", 10)
+        ).pack(pady=(5, 2))
 
         # Validación de entrada
         def validar_entrada(texto):
@@ -510,30 +445,29 @@ class FacturacionApp:
             main_frame,
             validate="key",
             validatecommand=val_cmd,
-            font=("Arial", 14),
-            width=15
+            font=("Arial", 12),
+            width=12
         )
-        self.entry_monto.pack(pady=10)
+        self.entry_monto.pack(pady=5)
 
         # Botones
         btn_frame = ttk.Frame(main_frame)
-        btn_frame.pack(pady=15)
+        btn_frame.pack(pady=10)
 
         ttk.Button(
             btn_frame,
             text="Cancelar",
             command=manual_window.destroy
-        ).pack(side=tk.LEFT, padx=10)
+        ).pack(side=tk.LEFT, padx=5)
 
         ttk.Button(
             btn_frame,
             text="Registrar",
-            command=lambda: self.procesar_monto_manual(path, manual_window),
-            style="Accent.TButton"
+            command=lambda: self.procesar_monto_manual(path, manual_window)
         ).pack(side=tk.LEFT)
 
     def procesar_monto_manual(self, path, ventana):
-        """Procesamiento del monto manual"""
+        """Procesamiento manual optimizado"""
         monto_str = self.entry_monto.get()
         try:
             monto = float(monto_str.replace(',', '.'))
@@ -542,48 +476,44 @@ class FacturacionApp:
                 
             self.blockchain.add_factura(path, monto)
             self.lbl_resultado.config(
-                text=f"✏️ Total manual: {monto:.2f} €",
+                text=f"✏️ Total: {monto:.2f} €",
                 foreground="#d32f2f"
             )
             ventana.destroy()
-            messagebox.showinfo("Éxito", "Factura registrada manualmente")
         except ValueError as e:
             messagebox.showerror("Error", f"Monto no válido:\n{str(e)}")
 
     def reintentar_analisis(self):
-        """Reintento de análisis"""
-        if self.current_image:
-            self.cargar_documento()
+        """Reintento de análisis optimizado"""
+        if self.current_image and not self.processing:
+            self.cargar_documento_thread()
 
     def generar_reporte(self):
-        """Generación de reportes"""
+        """Generación de reportes optimizada"""
         periodo = self.cbo_periodo.get().lower()
         datos = self.blockchain.generate_report(periodo)
 
         self.txt_reporte.config(state=tk.NORMAL)
         self.txt_reporte.delete(1.0, tk.END)
         
-        # Encabezado
+        # Encabezado simplificado
         self.txt_reporte.tag_configure("center", justify='center')
-        self.txt_reporte.insert(tk.END, "═"*80 + "\n", "center")
-        self.txt_reporte.insert(tk.END, f" 📅 REPORTE {periodo.upper()} \n", "center")
-        self.txt_reporte.insert(tk.END, "═"*80 + "\n\n", "center")
+        self.txt_reporte.insert(tk.END, f"📅 REPORTE {periodo.upper()}\n", "center")
+        self.txt_reporte.insert(tk.END, "═"*50 + "\n\n", "center")
         
-        # Resumen
-        self.txt_reporte.insert(tk.END, f" ▪ Período: {periodo.capitalize()}\n")
-        self.txt_reporte.insert(tk.END, f" ▪ Facturas procesadas: {len(datos['facturas'])}\n")
-        self.txt_reporte.insert(tk.END, f" ▪ Total facturado: {datos['total']:,.2f} €\n\n")
+        # Resumen optimizado
+        self.txt_reporte.insert(tk.END, f"▪ Período: {periodo.capitalize()}\n")
+        self.txt_reporte.insert(tk.END, f"▪ Facturas: {len(datos['facturas'])}\n")
+        self.txt_reporte.insert(tk.END, f"▪ Total: {datos['total']:,.2f} €\n\n")
         
-        # Detalle
+        # Detalle optimizado
         if datos['facturas']:
-            self.txt_reporte.insert(tk.END, " 📋 Detalle de Facturas:\n")
             for factura in datos['facturas']:
                 self.txt_reporte.insert(tk.END, 
-                    f"    • {factura['nombre_archivo']: <40} {factura['monto']: >10.2f} €\n")
+                    f"• {factura['nombre_archivo'][:30]: <32} {factura['monto']: >8.2f} €\n")
         else:
-            self.txt_reporte.insert(tk.END, " ℹ️ No se encontraron facturas para este período\n")
+            self.txt_reporte.insert(tk.END, "ℹ️ No hay facturas\n")
         
-        self.txt_reporte.insert(tk.END, "\n" + "═"*80, "center")
         self.txt_reporte.config(state=tk.DISABLED)
 
 if __name__ == "__main__":
