@@ -421,3 +421,17 @@ agen sage
 Total 412,03 €
 
 2025-05-08 20:10:27,822 - WARNING - Datos de idioma español no encontrados
+2025-05-09 06:57:29,033 - WARNING - Datos de idioma español no encontrados
+2025-05-09 06:57:35,282 - ERROR - Error inesperado: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:57:35,282 - WARNING - Fallo en API: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:57:35,326 - ERROR - Error en análisis OCR: /usr/bin/tesseract is not installed or it's not in your PATH. See README file for more information.
+2025-05-09 06:57:41,042 - ERROR - Error inesperado: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:57:41,042 - WARNING - Fallo en API: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:57:41,073 - ERROR - Error en análisis OCR: /usr/bin/tesseract is not installed or it's not in your PATH. See README file for more information.
+2025-05-09 06:57:45,559 - ERROR - Error inesperado: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:57:45,559 - WARNING - Fallo en API: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:57:45,596 - ERROR - Error en análisis OCR: /usr/bin/tesseract is not installed or it's not in your PATH. See README file for more information.
+2025-05-09 06:58:03,212 - WARNING - Datos de idioma español no encontrados
+2025-05-09 06:58:08,945 - ERROR - Error inesperado: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:58:08,945 - WARNING - Fallo en API: [Errno 2] No such file or directory: '/tmp/temp_img.jpg'
+2025-05-09 06:58:09,010 - ERROR - Error en análisis OCR: /usr/bin/tesseract is not installed or it's not in your PATH. See README file for more information.
